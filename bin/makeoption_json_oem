@@ -1,0 +1,33 @@
+#!c:\Python34\python
+
+#
+import json
+import os
+import argparse
+import re
+
+# This is a helper Python script that reads a json template file and injects environment
+# variables specific to Oracle OEM
+
+# Read source template
+
+with open("./resources/options_oem_template.json", "r") as source:
+   lines = source.readlines()
+
+# For every line in source template determine if an environment variable placeholder is set
+# and if so replace it with the value from the environment in which this utility is running
+
+# Environment variable placeholders in the template begin with a $
+
+with open("./resources/optionsOEM.json", "w") as target:
+   for line in lines:
+     matchobj1=re.search(r'\$PORT', line, re.I)
+     matchobj2=re.search(r'\$DBSECGRP', line, re.I)
+     if (os.getenv('PORT') != '') and matchobj1:
+        target.write(re.sub('\$PORT', os.getenv('PORT'), line))
+     elif (os.getenv('DBSECGRP') != '') and matchobj2:
+        target.write(re.sub('\$DBSECGRP', os.getenv('DBSECGRP'), line))
+     else:
+        target.write(line)
+
+

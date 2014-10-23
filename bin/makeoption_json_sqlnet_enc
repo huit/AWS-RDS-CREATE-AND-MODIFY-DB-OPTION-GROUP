@@ -1,0 +1,40 @@
+#!c:\Python34\python
+
+#
+import json
+import os
+import argparse
+import re
+
+# This is a helper Python script that reads a json template file and injects environment
+# variables specific to Oracle SQLNET Encryption
+
+# Read source template
+
+with open("./resources/options_sqlnet_encryption_template.json", "r") as source:
+   lines = source.readlines()
+
+# For every line in source template determine if an environment variable placeholder is set
+# and if so replace it with the value from the environment in which this utility is running
+
+# Environment variable placeholders in the template begin with a $
+
+with open("./resources/optionsSQLNET_ENC.json", "w") as target:
+   for line in lines:
+     matchobj1=re.search(r'\$CRYPTOCSUMTYPESERVER', line, re.I)
+     matchobj2=re.search(r'\$ENCTYPESERVER', line, re.I)
+     matchobj3=re.search(r'\$CRYPTOCSUMSERVER', line, re.I)
+     matchobj4=re.search(r'\$ENCSERVER', line, re.I)
+     if (os.getenv('CRYPTOCSUMTYPESERVER') != '') and matchobj1:
+        target.write(re.sub('\$CRYPTOCSUMTYPESERVER', os.getenv('CRYPTOCSUMTYPESERVER'), line))
+     elif (os.getenv('ENCTYPESERVER') != '') and matchobj2:
+        target.write(re.sub('\$ENCTYPESERVER', os.getenv('ENCTYPESERVER'), line))
+     elif (os.getenv('CRYPTOCSUMSERVER') != '') and matchobj3:
+        target.write(re.sub('\$CRYPTOCSUMSERVER', os.getenv('CRYPTOCSUMSERVER'), line))
+     elif (os.getenv('ENCSERVER') != '') and matchobj4:
+        target.write(re.sub('\$ENCSERVER', os.getenv('ENCSERVER'), line))
+     else:
+        target.write(line)
+
+        
+

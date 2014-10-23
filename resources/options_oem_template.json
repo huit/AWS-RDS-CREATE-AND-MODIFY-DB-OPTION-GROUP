@@ -1,0 +1,8 @@
+[
+ {
+                "DBSecurityGroupMemberships": ["$DBSECGRP"],
+                "VpcSecurityGroupMemberships": [],
+                "Port": $PORT,
+                "OptionName": "OEM"
+             }
+]
